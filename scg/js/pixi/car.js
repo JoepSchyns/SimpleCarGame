@@ -1,34 +1,30 @@
-function Car(x,y,w,h,c){
-PIXI.Container.call(this); //create container for all graphics 
-host.pixi.stage.addChild(this);
-this.x = x;
-this.y = y;
-this.h = h;
-this.w = w;
-this.c = c;
-//this.addChild(host.pixi.createRect(0,0,w ,h ,host.pixi.rgb2hex(200,0,0))); //TODO create better fitting hitbox
+import * as PIXI from 'pixi.js';
 
-this.brakeLights = new PIXI.Container();
-this.brakeLights.addChild(host.pixi.createRect(w * 0.05,0,w * 0.2,h * 0.1,host.pixi.rgb2hex(200,0,0))); //left light;
-this.brakeLights.addChild(host.pixi.createRect(w * 0.75,0,w * 0.2,h * 0.1,host.pixi.rgb2hex(200,0,0))); //left light;
-this.smallestDist = -1;
-this.crackInSight = false;
-this.smallestDistX_L = -1;
-this.smallestDistX_R = -1;
-// this.text = new PIXI.Text("test",{font:"30px Arial", fill:"red"});
-// this.text.y -= 50;
-// this.addChild(this.text);
+export class Car extends PIXI.Container {
+    constructor(x, y, w, h, c) {
+        super();
+        window.host.pixi.stage.addChild(this);
+        this.x = x;
+        this.y = y;
+        this.h = h;
+        this.w = w;
+        this.c = c;
+        
+        this.brakeLights = new PIXI.Container();
+        this.brakeLights.addChild(window.host.pixi.createRect(w * 0.05, 0, w * 0.2, h * 0.1, window.host.pixi.rgb2hex(200, 0, 0)));
+        this.brakeLights.addChild(window.host.pixi.createRect(w * 0.75, 0, w * 0.2, h * 0.1, window.host.pixi.rgb2hex(200, 0, 0)));
+        this.smallestDist = -1;
+        this.crackInSight = false;
+        this.smallestDistX_L = -1;
+        this.smallestDistX_R = -1;
+        this.speed = 0;
+    }
 
-this.speed = 0;
-}
-
-Car.prototype = PIXI.Container.prototype;
-
-Car.prototype.remove = function(other){
-	host.pixi.stage.removeChild(this);
-}
-
-Car.prototype.createCarGraphic = function() {
+    remove(other) {
+        window.host.pixi.stage.removeChild(this);
+    }
+    
+    createCarGraphic() {
 	var c = this.c;
 	var body = new PIXI.Polygon([
 		new PIXI.Point(10,10),
@@ -88,60 +84,63 @@ Car.prototype.createCarGraphic = function() {
 		new PIXI.Point(170,230),
 		new PIXI.Point(160,240),]);
 
-	var car = new PIXI.Graphics();
-	car.beginFill(host.pixi.hsl2hex(c.h,c.s,c.l));
-	car.drawShape(body);
-	car.endFill();
-	car.beginFill(host.pixi.hsl2hex(c.h,c.s,c.l + 21));
-	car.drawShape(hood);
-	car.drawShape(roof);
-	car.drawShape(tailgate);
-	car.endFill();
-	car.beginFill(0xa7dbdd);
-	car.drawShape(windshield);
-	car.drawShape(backwindow);
-	car.endFill();
-	car.beginFill(host.pixi.hsl2hex(c.h,c.s,(c.l - 25)));
-	car.drawShape(wheelarchRB);
-	car.drawShape(wheelarchLB);
-	car.drawShape(wheelarchRT);
-	car.drawShape(wheelarchLT);
-	car.w = 180;
-	car.h = 260;
-	return car;
-};
-
-Car.prototype.collision =function(){
-	this.smallestDist = -1;
-	this.smallestDistX_L = -1;
-	this.smallestDistX_R = -1;
-	this.voorliggerSpeed = -1;
-	host.pixi.collisionCars.forEach(function(element){
-
-		if(this != element){
-			var distY =element.y + element.h / 2 - this.y - this.h / 2;
-			var distX =element.x + element.w / 2 - this.x - this.w / 2;
-			if (Math.abs(distX) < this.w / 2 + element.w / 2){
-				if(Math.abs(distY) < this.h / 2 + element.h / 2){
-
-						this.remove(element);
-					if(element.y > -element.h) //also remove other car when it is visible on screen
-						element.remove(this);
-
-				return;
-			}else if(distY > 0 && (distY < this.smallestDist || this.smallestDist == -1 )){
-				this.smallestDist = distY - this.h / 2 - element.h / 2;
-				this.voorliggerSpeed = element.speed;
-
-			}
-
-		}else if(distY > -this.h && distY < this.h / 2){
-			if(distX > 0 && (distX < this.smallestDistX_R  || this.smallestDistX_R  == -1 )){
-				this.smallestDistX_R = distX;
-			}else if(distX < 0 && (distX > this.smallestDistX_L  || this.smallestDistX_L  == -1 )){
-				this.smallestDistX_L = distX;
-			}
-		}
-	}
-}.bind(this));
+        const car = new PIXI.Graphics();
+        
+        // Draw body base
+        car.poly(body.points);
+        car.fill(window.host.pixi.hsl2hex(c.h, c.s, c.l));
+        
+        // Draw lighter colored parts (hood, roof, tailgate)
+        car.poly(hood.points);
+        car.poly(roof.points);
+        car.poly(tailgate.points);
+        car.fill(window.host.pixi.hsl2hex(c.h, c.s, c.l + 21));
+        
+        // Draw windows
+        car.poly(windshield.points);
+        car.poly(backwindow.points);
+        car.fill(0xa7dbdd);
+        
+        // Draw wheel arches
+        car.poly(wheelarchRB.points);
+        car.poly(wheelarchLB.points);
+        car.poly(wheelarchRT.points);
+        car.poly(wheelarchLT.points);
+        car.fill(window.host.pixi.hsl2hex(c.h, c.s, (c.l - 25)));
+        
+        car.w = 180;
+        car.h = 260;
+        return car;
+    }
+    
+    collision() {
+        this.smallestDist = -1;
+        this.smallestDistX_L = -1;
+        this.smallestDistX_R = -1;
+        this.voorliggerSpeed = -1;
+        window.host.pixi.collisionCars.forEach((element) => {
+            if (this !== element) {
+                const distY = element.y + element.h / 2 - this.y - this.h / 2;
+                const distX = element.x + element.w / 2 - this.x - this.w / 2;
+                if (Math.abs(distX) < this.w / 2 + element.w / 2) {
+                    if (Math.abs(distY) < this.h / 2 + element.h / 2) {
+                        this.remove(element);
+                        if (element.y > -element.h) {
+                            element.remove(this);
+                        }
+                        return;
+                    } else if (distY > 0 && (distY < this.smallestDist || this.smallestDist === -1)) {
+                        this.smallestDist = distY - this.h / 2 - element.h / 2;
+                        this.voorliggerSpeed = element.speed;
+                    }
+                } else if (distY > -this.h && distY < this.h / 2) {
+                    if (distX > 0 && (distX < this.smallestDistX_R || this.smallestDistX_R === -1)) {
+                        this.smallestDistX_R = distX;
+                    } else if (distX < 0 && (distX > this.smallestDistX_L || this.smallestDistX_L === -1)) {
+                        this.smallestDistX_L = distX;
+                    }
+                }
+            }
+        });
+    }
 }

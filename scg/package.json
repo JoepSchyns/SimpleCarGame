@@ -1,0 +1,21 @@
+{
+  "name": "simple-car-game",
+  "version": "2.0.0",
+  "description": "Web arcade racing game - modernized",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["game", "racing", "arcade", "pixi"],
+  "authors": ["Joep Schyns"],
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "pixi.js": "^8.6.0",
+    "socket.io-client": "^4.7.0"
+  }
+}

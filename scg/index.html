@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SimpleCarGame</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <meta name="theme-color" content="#ff9b0a">
+    <link rel="icon" sizes="192x192" href="images/large_favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./styles/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Drawer -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+    <aside id="drawer" class="drawer">
+        <div class="drawer-header">
+            <img src="images/large_favicon.png" alt="SimpleCarGame Logo">
+            <h2>Menu</h2>
+        </div>
+        <nav class="drawer-menu">
+            <button class="menu-item">
+                <i class="fa fa-cog"></i>
+                <span>Settings</span>
+            </button>
+            <button class="menu-item">
+                <i class="fa fa-users"></i>
+                <span>Credits</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="header">
+            <button id="menu-button" class="icon-button" aria-label="Open menu">
+                <i class="fa fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- Game Interface -->
+        <div id="interface" class="interface">
+            <h1 id="title">SimpleCarGame</h1>
+            
+            <div id="buttons" class="player-buttons">
+                <!-- Player buttons will be generated dynamically -->
+                <div class="player-slot" data-slot="0">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="player-slot" data-slot="1">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="player-slot" data-slot="2">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="player-slot" data-slot="3">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="player-slot" data-slot="4">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="player-slot" data-slot="5">
+                    <button class="fab add-player">
+                        <i class="fa fa-user-plus"></i>
+                        <div class="ripple"></div>
+                    </button>
+                    <div class="control-buttons">
+                        <button class="fab control-left">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <div class="ripple"></div>
+                        </button>
+                        <button class="fab control-right">
+                            <i class="fa fa-arrow-circle-right"></i>
+                            <div class="ripple"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="button-start" id="start">
+                <span>START</span>
+                <div class="ripple"></div>
+            </button>
+        </div>
+
+        <!-- Game Canvas -->
+        <div id="game" class="game-container"></div>
+
+        <!-- Link to Room -->
+        <div id="linktoroom" class="link-to-room">
+            <div id="qrcode" class="qrcode-container"></div>
+            <div class="room-info">
+                <p>Go with your smartphone to:</p>
+                <a id="link" target="_blank" href="http://localhost:3000/controller">
+                    localhost:3000/controller
+                </a>
+                <p>and type in:</p>
+                <span id="seed" class="room-seed"></span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
