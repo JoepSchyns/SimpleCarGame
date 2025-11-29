@@ -2,20 +2,22 @@
 <html>
 <title>controls</title>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" minimal-ui>
-<link rel="import" href="/scg/bower_components/font-roboto/roboto.html">
-<link rel="import" href="/scg/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/scg/bower_components/paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="/scg/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/scg/bower_components/paper-dialog/paper-dialog.html"> <link rel="manifest" href="WebAppManifest.json">
+<!-- Polymer components commented out - not available via CDN -->
+<!-- <link rel="import" href="https://cdn.jsdelivr.net/npm/@polymer/font-roboto@3.0.2/roboto.html">
+<link rel="import" href="https://cdn.jsdelivr.net/npm/@polymer/paper-button@3.0.1/paper-button.html">
+<link rel="import" href="https://cdn.jsdelivr.net/npm/@polymer/paper-toggle-button@3.0.1/paper-toggle-button.html">
+<link rel="import" href="https://cdn.jsdelivr.net/npm/@polymer/paper-input@3.2.1/paper-input.html">
+<link rel="import" href="https://cdn.jsdelivr.net/npm/@polymer/paper-dialog@3.0.1/paper-dialog.html"> -->
+<link rel="manifest" href="WebAppManifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="shortcut icon" type="image/png" href="images/favicon.png">
 <meta name="theme-color" content="#ff9b0a">
-<link rel="icon" sizes="192x192" href="joep/images/large_favicon.png">
-<script src="/joep/js/jquery.js" type="text/javascript"></script>
-<script src="/scg/js/jquery.animate-colors-min.js" type="text/javascript"></script>
-<script src="https://joepschyns.me:8000/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/scg/js/socket/playersocket.js"></script>
+<link rel="icon" sizes="192x192" href="images/large_favicon.png">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script src="js/jquery.animate-colors-min.js" type="text/javascript"></script>
+<script src="http://localhost:8000/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="js/socket/playersocket.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <script type="text/javascript">
@@ -25,7 +27,7 @@ function Controller(){
 	this.pause = false;
 	var self = this;
 	this.color;
-	var t = <?php echo $_GET["s"] ?> + "";
+	var t = <?php echo isset($_GET["s"]) ? json_encode($_GET["s"]) : '""'; ?>;
 
 	if(t == ""){
 		t = this.getRoomNumber();
@@ -168,15 +170,22 @@ Controller.prototype.pauseunpause = function() { //reverse pause
 };
 Controller.prototype.setRoomNumber = function() {
 	var value = document.getElementById('roomnumber').value;
+	var errorDiv = document.getElementById('roomnumbererror');
+	var input = document.getElementById('roomnumber');
 
-	if( value.length == 0){
-		document.getElementById('roomnumberdecor').isInvalid = true;
+	if(value.length == 0 || value.length < 3){
+		errorDiv.style.display = 'block';
+		input.style.borderColor = '#d32f2f';
 	}else{
-		var valid = document.getElementById('roomnumber').validity.valid;
-		document.getElementById('roomnumberdecor').isInvalid  = !valid;
-		console.debug(document.getElementById('roomnumber').validity);
+		var valid = /^[0-9]{3,5}$/.test(value);
 		if(valid){
+			errorDiv.style.display = 'none';
+			input.style.borderColor = '#4caf50';
+			document.getElementById('noroomdialog').style.display = 'none';
 			this.socket.connectWithSeedToRoom(value);
+		}else{
+			errorDiv.style.display = 'block';
+			input.style.borderColor = '#d32f2f';
 		}
 	}
 };
@@ -305,15 +314,19 @@ html /deep/ paper-dialog {
 
 </style>
 <body>
-<paper-dialog id="noroomdialog"  heading="Fill in your room number"  transition="paper-dialog-transition-bottom" autoCloseDisabled>
-	<div class="md-dialog-content">
-	<h3>Fill in your room number</h3>
-			<paper-input-decorator id="roomnumberdecor" label="xxxx" error="did you fill in the correct room number?">
-			<input id="roomnumber" is="core-input"  pattern="[0-9]{3,5}" maxlength="4">
-			</paper-input-decorator>
-		<paper-button affirmative onclick="controller.setRoomNumber();">Accept</paper-button>
+<!-- Simple HTML replacement for Polymer dialog -->
+<div id="noroomdialog" style="display:block; position:fixed; z-index:200; left:50%; top:50%; transform:translate(-50%, -50%); width:300px; padding:20px; background:white; box-shadow:0 4px 6px rgba(0,0,0,0.3); border-radius:4px;">
+	<h3 style="margin-top:0; color:#333;">Fill in your room number</h3>
+	<div style="margin:20px 0;">
+		<input id="roomnumber" type="text" pattern="[0-9]{3,5}" maxlength="4" placeholder="xxxx" 
+		       style="width:100%; padding:10px; font-size:16px; border:2px solid #ddd; border-radius:4px; box-sizing:border-box;">
+		<div id="roomnumbererror" style="display:none; color:#d32f2f; font-size:12px; margin-top:5px;">Please enter a valid room number (3-5 digits)</div>
 	</div>
-</paper-dialog>
+	<button onclick="controller.setRoomNumber();" 
+	        style="width:100%; padding:12px; background:#ff9b0a; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer; font-weight:bold;">
+		Accept
+	</button>
+</div>
 <!-- pause button -->
 <div id="pause" class="button raised" onclick="controller.pauseunpause();">
 	<div  fit>

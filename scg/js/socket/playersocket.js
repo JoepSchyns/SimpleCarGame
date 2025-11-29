@@ -1,7 +1,7 @@
 function Socket (seed,player) {
 	var self = this;
 	this.seed = seed;
-	this.socket = io("https://joepschyns.me:8000");
+	this.socket = io("http://localhost:8000");
 	this.socket.on('connect', function(){ //do stuff when connection is succesfull
 		self.connectToRoom();
 	});
@@ -34,34 +34,24 @@ Socket.prototype.connectToRoom = function() {
 	this.socket.emit("connectToRoom",this.seed,controller.color,function(feedback){
 		if(feedback){ //if where able to connect to room
 			$("#pause").css("display","inline");
-			if($("#noroomdialog").data("opened"))
-				$("#noroomdialog").toggle();
+			$("#noroomdialog").css("display","none");
 		}else{
 			$('body').css("background-color","#ffcbbb");
-			if(!$("#noroomdialog").data("opened") || $("#noroomdialog").data("opened") == undefined){
-				$("#noroomdialog").data("opened",true);
-				$("#noroomdialog").toggle();
-			}
-			console.debug($("#noroomdialog"));
-			
+			$("#noroomdialog").css("display","block");
 		}
 	});
 };
 Socket.prototype.connectWithSeedToRoom = function(seed) {
 	this.socket.emit("connectToRoom",seed,controller.color,function(feedback){
-		console.debug($("#noroomdialog").data("opened"));
 		if(feedback){ //if where able to connect to room
 			controller.setCookieRoomNumber(seed);
 			$("#pause").css("display","inline");
-			if($("#noroomdialog").data("opened"))
-				$("#noroomdialog").toggle();
+			$("#noroomdialog").css("display","none");
 		}else{
 			$('body').css("background-color","#ffcbbb");
-			if(!$("#noroomdialog").data("opened") || $("#noroomdialog").data("opened") == undefined){
-				$("#noroomdialog").data("opened",true);
-				$("#noroomdialog").toggle();
-			}else if($("#noroomdialog").data("opened"))
-				document.getElementById('roomnumberdecor').isInvalid = true;
+			$("#noroomdialog").css("display","block");
+			document.getElementById('roomnumbererror').style.display = 'block';
+			document.getElementById('roomnumber').style.borderColor = '#d32f2f';
 		}
 	});
 };

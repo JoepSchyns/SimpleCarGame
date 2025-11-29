@@ -17,7 +17,7 @@ function Background(w,h,margin){
 	this.addChild(this.grassR);
 
 	for (var i = 0; i < totalFences; i++) {
-		var fence = new PIXI.Sprite(PIXI.Texture.fromImage("/scg/images/fence.png"));
+		var fence = new PIXI.Sprite(PIXI.Texture.fromImage("images/fence.png"));
 		fence.anchor.x = 1;
 		fence.anchor.y = 0.5;
 			if(i < totalFences / 2){ //place half of the fences left others right

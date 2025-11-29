@@ -1,14 +1,10 @@
-var fs = require('fs');
 var express = require('express');
 var app = express();
-var https = require('https').createServer({
-  key: fs.readFileSync('/etc/letsencrypt/live/joepschyns.me/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/joepschyns.me/cert.pem')
-}, app);
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
 
-var io = require('socket.io')(https);
-https.listen(8000, function() {
-  console.log('server up and running at %s port', 8000);
+http.listen(8000, '0.0.0.0', function() {
+  console.log('Socket server up and running at port 8000');
 });
 var hosts = {};//create object in which room seed which host is active
 
