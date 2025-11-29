@@ -1,0 +1,373 @@
+/* Mobile Controller Styles */
+:root {
+    --primary-color: #ff9b0a;
+    --primary-dark: #f08e00;
+    --success-color: #4caf50;
+    --danger-color: #f44336;
+    --text-light: #fefcf2;
+    --text-dark: #363636;
+    --background: #1a1a1a;
+    --surface: #2a2a2a;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background);
+    color: var(--text-light);
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+}
+
+.app {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen-content {
+    width: 100%;
+    max-width: 400px;
+    padding: 32px;
+    text-align: center;
+}
+
+/* Connect Screen */
+.logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #999;
+    margin-bottom: 32px;
+}
+
+.connect-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.input-group {
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #999;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 4px;
+    background: var(--surface);
+    border: 2px solid #444;
+    border-radius: 8px;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.input-group input.error {
+    border-color: var(--danger-color);
+}
+
+.error-message {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--danger-color);
+    min-height: 16px;
+}
+
+.color-picker {
+    text-align: left;
+}
+
+.color-picker label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #999;
+}
+
+.color-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.color-btn {
+    flex: 1;
+    height: 48px;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.color-btn.active {
+    border-color: var(--text-light);
+    transform: scale(1.1);
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-icon {
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--text-light);
+}
+
+.btn-primary:active {
+    background: var(--primary-dark);
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background: var(--success-color);
+    color: var(--text-light);
+    margin-top: 16px;
+}
+
+.btn-secondary:active {
+    background: #45a049;
+    transform: scale(0.98);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger-color);
+    border: 2px solid var(--danger-color);
+    margin-top: 16px;
+}
+
+.btn-danger:active {
+    background: var(--danger-color);
+    color: var(--text-light);
+}
+
+.btn-icon {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.status-message {
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    color: #999;
+    min-height: 48px;
+}
+
+/* Waiting Screen */
+.player-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+}
+
+.player-color {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    border: 4px solid var(--text-light);
+}
+
+.lives-display {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.lives-label {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 8px;
+}
+
+.lives-count {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Game Screen */
+#game-screen {
+    justify-content: space-between;
+    padding: 24px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.lives-display-compact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    color: var(--danger-color);
+}
+
+.score-display {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.controls-container {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.control-btn {
+    flex: 1;
+    height: 200px;
+    border: none;
+    border-radius: 16px;
+    font-size: 64px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: var(--shadow);
+}
+
+.control-btn.left {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.control-btn.right {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.game-footer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Error Screen */
+.error-icon {
+    font-size: 64px;
+    color: var(--danger-color);
+    margin-bottom: 24px;
+}
+
+#error-screen h2 {
+    margin-bottom: 16px;
+}
+
+#error-screen p {
+    color: #999;
+    margin-bottom: 32px;
+}
+
+/* Vibration Effect */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) {
+    .controls-container {
+        height: 100%;
+        max-height: none;
+    }
+    
+    .control-btn {
+        height: 100%;
+    }
+    
+    #game-screen {
+        padding: 16px;
+    }
+}

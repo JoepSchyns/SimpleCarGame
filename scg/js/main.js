@@ -1,11 +1,12 @@
 import { PixiGame } from './pixi/pixi-game.js';
 import { RippleEffect, Drawer, fitText, isMobile } from './utils/ui.js';
+import { SocketManager } from './utils/SocketManager.js';
 
 class Host {
     constructor() {
         this.pixi = null;
         this.seedRoom = null;
-        this.socket = null;
+        this.socketManager = null;
         this.mobile = isMobile();
         this.datVars = this.getDefaultVariables();
         
@@ -31,14 +32,66 @@ class Host {
         // Setup start button
         document.getElementById('start').addEventListener('click', () => this.startGame());
         
-        // Initialize room/socket functionality
+        // Initialize socket connection and room
         if (!this.mobile) {
-            this.initializeRoom();
+            this.initializeSocket();
+            this.initializeRoomUI();
             this.setupDebugGUI();
         } else {
             document.getElementById('linktoroom').classList.add('hidden');
             document.getElementById('buttons').style.display = 'none';
         }
+    }
+    
+    initializeSocket() {
+        // Connect to WebSocket server
+        const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+        this.socketManager = new SocketManager(serverUrl);
+        this.socketManager.connect();
+        
+        // Setup socket event handlers
+        this.socketManager.on('connected', (socketId) => {
+            console.log('Socket connected:', socketId);
+            // Create room after connection is established
+            this.createRoom();
+        });
+        
+        this.socketManager.on('playerJoined', (data) => {
+            console.log('Remote player joined:', data);
+            // Create remote player
+            const player = this.pixi.createPlayer(data.playerId, data.color);
+            player.remote = true;
+            
+            // Send initial player data back
+            if (this.socketManager) {
+                this.socketManager.sendHostFeedback(data.playerId, {
+                    color: data.color,
+                    lives: player.lifeCars.children.length,
+                    paused: this.pixi.paused
+                });
+            }
+        });
+        
+        this.socketManager.on('playerLeft', (data) => {
+            console.log('Remote player left:', data);
+            this.pixi.removePlayer(data.playerId);
+        });
+        
+        this.socketManager.on('playerInput', (data) => {
+            // Handle remote player input
+            console.log('Received player input:', data);
+            const player = this.pixi.players.find(p => p.id === data.playerId);
+            if (player && player.remote) {
+                // Apply input value (-1 left, 0 stop, 1 right)
+                player.move.x = data.input * player.maxMove;
+                console.log(`Player ${data.playerId} move.x set to:`, player.move.x);
+            }
+        });
+        
+        this.socketManager.on('hostDisconnected', () => {
+            alert('Host has disconnected. Returning to menu...');
+            window.location.reload();
+        });
     }
     
     setupPlayerButtons() {
@@ -187,14 +240,14 @@ class Host {
         return '<i class="fa fa-exclamation-circle"></i>';
     }
     
-    initializeRoom() {
+    initializeRoomUI() {
         // Generate random seed
-        const seed = Math.random().toString(36).substr(2, 6).toUpperCase();
-        document.getElementById('seed').textContent = seed;
+        this.seedRoom = Math.random().toString(36).substr(2, 6).toUpperCase();
+        document.getElementById('seed').textContent = this.seedRoom;
         
         // Generate QR code
         const qrElement = document.getElementById('qrcode');
-        const link = window.location.origin + '/controller';
+        const link = window.location.origin + '/controller.html';
         document.getElementById('link').href = link;
         
         // Clear any existing QR code
@@ -213,6 +266,17 @@ class Host {
         }
     }
     
+    createRoom() {
+        // Create room on server (called after socket connects)
+        if (this.socketManager && this.socketManager.connected && this.seedRoom) {
+            this.socketManager.createRoom(this.seedRoom).then(() => {
+                console.log('Room created on server:', this.seedRoom);
+            }).catch(error => {
+                console.error('Failed to create room:', error);
+            });
+        }
+    }
+    
     startGame() {
         this.pixi.started = true;
         document.getElementById('interface').classList.add('hidden');
@@ -225,6 +289,11 @@ class Host {
         
         // Add initial traffic cars
         this.pixi.addSelfDrivingCars(3);
+        
+        // Notify server that game has started
+        if (this.socketManager && this.socketManager.connected) {
+            this.socketManager.startGame();
+        }
     }
     
     setupDebugGUI() {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>SimpleCarGame Controller</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <meta name="theme-color" content="#ff9b0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./styles/controller.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <!-- Connection Screen -->
+        <div id="connect-screen" class="screen active">
+            <div class="screen-content">
+                <img src="images/large_favicon.png" alt="SimpleCarGame" class="logo">
+                <h1>SimpleCarGame</h1>
+                <p class="subtitle">Mobile Controller</p>
+                
+                <div class="connect-form">
+                    <div class="input-group">
+                        <label for="room-code">Room Code</label>
+                        <input 
+                            type="text" 
+                            id="room-code" 
+                            placeholder="Enter 6-digit code"
+                            maxlength="6"
+                            autocomplete="off"
+                            autocapitalize="characters">
+                        <span class="error-message" id="room-error"></span>
+                    </div>
+                    
+                    <div class="color-picker">
+                        <label>Your Color</label>
+                        <div class="color-options">
+                            <button class="color-btn" data-color="#ff4444" style="background: #ff4444"></button>
+                            <button class="color-btn" data-color="#44ff44" style="background: #44ff44"></button>
+                            <button class="color-btn" data-color="#4444ff" style="background: #4444ff"></button>
+                            <button class="color-btn active" data-color="#ffaa44" style="background: #ffaa44"></button>
+                            <button class="color-btn" data-color="#ff44ff" style="background: #ff44ff"></button>
+                            <button class="color-btn" data-color="#44ffff" style="background: #44ffff"></button>
+                        </div>
+                    </div>
+                    
+                    <button id="connect-btn" class="btn-primary">
+                        <i class="fa fa-plug"></i>
+                        Connect to Game
+                    </button>
+                </div>
+                
+                <div class="status-message" id="status-message"></div>
+            </div>
+        </div>
+        
+        <!-- Waiting Screen -->
+        <div id="waiting-screen" class="screen">
+            <div class="screen-content">
+                <div class="player-card">
+                    <div id="player-color-display" class="player-color"></div>
+                    <h2>Connected!</h2>
+                    <p>Waiting for game to start...</p>
+                </div>
+                
+                <div class="lives-display">
+                    <div class="lives-label">Lives</div>
+                    <div id="lives-count" class="lives-count">10</div>
+                </div>
+                
+                <button id="ready-btn" class="btn-secondary">
+                    <i class="fa fa-check"></i>
+                    Ready
+                </button>
+                
+                <button id="disconnect-btn" class="btn-danger">
+                    <i class="fa fa-times"></i>
+                    Disconnect
+                </button>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="lives-display-compact">
+                    <i class="fa fa-heart"></i>
+                    <span id="game-lives-count">10</span>
+                </div>
+                <div class="score-display">
+                    <span id="score">0</span>
+                </div>
+            </div>
+            
+            <div class="controls-container">
+                <button id="left-btn" class="control-btn left">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button id="right-btn" class="control-btn right">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="game-footer">
+                <button id="pause-btn" class="btn-icon">
+                    <i class="fa fa-pause"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Error Screen -->
+        <div id="error-screen" class="screen">
+            <div class="screen-content">
+                <i class="fa fa-exclamation-triangle error-icon"></i>
+                <h2>Connection Lost</h2>
+                <p id="error-message">The host has disconnected.</p>
+                <button id="retry-btn" class="btn-primary">
+                    <i class="fa fa-rotate-right"></i>
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="./js/controller.js"></script>
+</body>
+</html>

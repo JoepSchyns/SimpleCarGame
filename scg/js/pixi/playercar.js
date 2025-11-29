@@ -26,6 +26,7 @@ export class PlayerCar extends Car {
         this.addChild(this.carGraphic);
         
         this.id = id;
+        this.remote = false; // Default to local player
         this.timeOffset = Math.PI * Math.random();
         this.centerY = this.y;
         this.move = { x: 0, y: 0 };
@@ -81,13 +82,20 @@ export class PlayerCar extends Car {
             const lifesLeft = this.lifeCars.children.length;
             if (lifesLeft > 0) {
                 this.lifeCars.removeChildAt(this.lifeCars.children.length - 1);
-                if (window.host.socket) {
-                    window.host.socket.feedback({ message: "update lifes", lifes: lifesLeft }, this.id);
+                const newLifesLeft = this.lifeCars.children.length;
+                if (this.remote && window.host && window.host.socketManager) {
+                    window.host.socketManager.sendHostFeedback(this.id, { 
+                        message: "Life lost", 
+                        lives: newLifesLeft
+                    });
                 }
             } else {
                 window.host.pixi.removePlayer(this.id);
-                if (window.host.socket) {
-                    window.host.socket.feedback({ message: "You ended the game", lifes: lifesLeft }, this.id);
+                if (this.remote && window.host && window.host.socketManager) {
+                    window.host.socketManager.sendHostFeedback(this.id, { 
+                        message: "Game over", 
+                        lives: 0 
+                    });
                 }
             }
         }

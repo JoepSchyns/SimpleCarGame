@@ -3,11 +3,8 @@ services:
     build: .
     container_name: simple-car-game
     ports:
-      - "8080:8080"  # PHP web server
-      - "8000:8000"  # Socket.io server
-    # Removed volume mount to prevent overwriting node_modules in container
-    # volumes:
-    #   - ./scg:/app/scg
+      - "8000:8000"  # Node.js server (serves frontend + WebSocket)
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+      - PORT=8000

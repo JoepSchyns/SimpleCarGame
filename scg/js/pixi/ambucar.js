@@ -25,6 +25,13 @@ export class AmbuCar extends SelfDrivingCar {
         window.host.pixi.addSelfDrivingCars(1);
         if (other && other.lifeCars && other.lifesActivated && other.timer === null) {
             other.addLifes(1);
+            // Send feedback to remote player
+            if (other.remote && window.host && window.host.socketManager) {
+                window.host.socketManager.sendHostFeedback(other.id, {
+                    message: "Extra life!",
+                    lives: other.lifeCars.children.length
+                });
+            }
         }
     }
     
