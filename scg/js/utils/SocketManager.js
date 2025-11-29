@@ -51,13 +51,11 @@ export class SocketManager {
         });
         
         this.socket.on('playerJoined', (data) => {
-            console.log('Player joined:', data);
-            this.trigger('playerJoined', data);
+            this.emit('playerJoined', data);
         });
         
         this.socket.on('playerLeft', (data) => {
-            console.log('Player left:', data);
-            this.trigger('playerLeft', data);
+            this.emit('playerLeft', data);
         });
         
         this.socket.on('playerInput', (data) => {
@@ -65,13 +63,11 @@ export class SocketManager {
         });
         
         this.socket.on('gameStarted', () => {
-            console.log('Game started');
-            this.trigger('gameStarted');
+            this.emit('gameStarted');
         });
         
         this.socket.on('hostDisconnected', () => {
-            console.log('Host disconnected');
-            this.trigger('hostDisconnected');
+            this.emit('hostDisconnected');
         });
         
         this.socket.on('hostFeedback', (feedback) => {

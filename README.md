@@ -2,7 +2,7 @@
 
 ![SimpleCarGame Banner](scg/images/large_favicon.png)
 
-A fully modernized multiplayer arcade racing game where you drive in the wrong direction on a one-way road. Built with modern web technologies including Pixi.js v8, Vite, and ES6+ JavaScript.
+A fully modernized multiplayer arcade racing game where you drive in the wrong direction on a one-way road. Built with modern web technologies including Pixi.js v8, Vite, Socket.io, and ES6+ JavaScript.
 
 ## 🎮 Game Description
 
@@ -10,93 +10,143 @@ Drive against traffic on a busy highway! You start with 10 lives and lose one fo
 
 **Features:**
 - 🚗 Multiple vehicle types: cars, trucks, and ambulances
-- 👥 Local multiplayer support (up to 6 players)
+- 👥 Multiplayer support (up to 6 players per room)
+- 📱 Mobile controller support (touch, mouse, and keyboard)
 - 🎨 Dynamic color-coded players
-- ⚡ Real-time physics and collision detection
+- ⚡ Real-time WebSocket communication
 - 🎛️ Live gameplay controls with dat.GUI
-- 📱 Responsive design
+- 🐳 Docker support for easy deployment
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Development Mode
 
-- Node.js (v16 or higher)
-- npm
-
-### Installation & Running
-
+#### Frontend (Vite)
 ```bash
 cd scg
 npm install
 npm run dev
 ```
+Frontend runs at `http://localhost:3000`
 
-The game will automatically open at `http://localhost:3000`
+#### Backend (Node.js + Socket.io)
+```bash
+cd server
+npm install
+npm run dev
+```
+Backend runs at `http://localhost:8000`
 
-### Building for Production
+### Production with Docker
 
 ```bash
-npm run build      # Build to dist/
-npm run preview    # Preview production build
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t simple-car-game .
+docker run -p 8000:8000 simple-car-game
 ```
+
+Production server runs at `http://localhost:8000` (serves frontend + WebSocket)
 
 ## 🎯 How to Play
 
-1. **Add Players**: Click orange player buttons to add up to 6 players
-2. **Assign Controls**: Click left/right arrows to assign keyboard keys
-3. **Start Game**: Click the START button
-4. **Survive**: Avoid traffic and collect ambulances for extra lives!
+### Host Game (Desktop)
+1. Open the game at `http://localhost:3000` (dev) or `http://localhost:8000` (production)
+2. Click "NEW GAME" to create a room
+3. Share the QR code or room code with players
+4. Wait for players to join
+5. Click "START" when ready
 
-### Default Controls
+### Join as Player (Mobile/Desktop)
+1. Scan the QR code OR visit `/controller.html?room=ROOMCODE`
+2. Use on-screen buttons, arrow keys, or mouse to control your car
+3. Try to survive as long as possible!
 
-- Player 1: Arrow keys (← →)
-- Additional players: Assign custom keys
+### Controls
+- **Touch**: Tap left/right buttons (mobile)
+- **Mouse**: Click and hold left/right buttons (desktop)
+- **Keyboard**: Arrow keys ← → (all devices)
 
-## 🛠️ Tech Stack (Modernized)
+## 🛠️ Tech Stack
 
-### Current (2025)
+### Frontend
+- **Pixi.js v8.6.0** - WebGL rendering engine
+- **Vite 5.0** - Build tool with HMR
+- **Socket.io Client 4.7** - WebSocket client
+- **dat.GUI 0.7.9** - Debug controls
 
-- **Pixi.js v8.6.0** - Latest WebGL rendering with modern Graphics API
-- **Vite 5.0** - Lightning-fast build tool with HMR
-- **ES6+ Modules** - Modern JavaScript architecture
-- **CSS Custom Properties** - Modern responsive styling
-- **dat.GUI 0.7.9** - Real-time controls
-- **Vanilla JavaScript** - No framework dependencies
+### Backend
+- **Node.js 20** - Runtime
+- **Express 4.21** - Web server
+- **Socket.io 4.8** - WebSocket server
+- **CORS** - Cross-origin support
 
-### Legacy (Removed)
-
-- ~~Polymer~~ → Modern HTML5
-- ~~Bower~~ → npm
-- ~~jQuery~~ → Native DOM APIs
-- ~~Pixi.js v4~~ → Pixi.js v8
-- ~~PHP/Apache~~ → Static build with Vite
+### DevOps
+- **Docker** - Containerization
+- **Multi-stage builds** - Optimized images
+- **Health checks** - Container monitoring
 
 ## 📁 Project Structure
 
 ```
-scg/
-├── images/              # Game assets (fences, icons)
-├── js/
-│   ├── main.js         # Game entry point & Host class
-│   ├── pixi/           # Game engine
-│   │   ├── pixi-game.js     # Main game loop
-│   │   ├── car.js           # Base car class
-│   │   ├── playercar.js     # Player-controlled cars
-│   │   ├── selfdrivingcar.js # AI base class
-│   │   ├── normalcar.js     # Regular traffic
-│   │   ├── ambucar.js       # Ambulances (life powerup)
-│   │   ├── truck.js         # Large trucks
-│   │   ├── lifecar.js       # Life indicator
-│   │   ├── background.js    # Road & grass
-│   │   └── brakeline.js     # Brake light trails
-│   ├── utils/          # UI utilities (ripple, drawer, etc.)
-│   └── socket/         # Multiplayer server (future feature)
-├── styles/
-│   └── main.css        # Modern CSS with custom properties
-├── index.html          # Main HTML5 entry
-├── vite.config.js      # Vite configuration
-└── package.json        # Dependencies
+SimpleCarGame/
+├── scg/                     # Frontend application
+│   ├── js/
+│   │   ├── main.js         # Host game controller
+│   │   ├── controller.js   # Mobile controller
+│   │   ├── pixi/           # Game engine
+│   │   │   ├── pixi-game.js
+│   │   │   ├── playercar.js
+│   │   │   ├── normalcar.js
+│   │   │   └── ...
+│   │   └── utils/          # UI utilities
+│   ├── styles/
+│   │   └── main.css
+│   ├── index.html          # Host page
+│   ├── controller.html     # Controller page
+│   └── package.json
+├── server/                  # Backend server
+│   ├── src/
+│   │   ├── GameRoom.js     # Room logic
+│   │   ├── RoomManager.js  # Room management
+│   │   └── SocketManager.js # WebSocket logic
+│   ├── server.js           # Entry point
+│   └── package.json
+├── Dockerfile              # Production Docker image
+├── docker-compose.yml      # Docker Compose config
+├── .env.example            # Environment template
+└── README.md
 ```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+# Server
+NODE_ENV=production
+PORT=8000
+
+# CORS (set to your domain in production)
+CORS_ORIGIN=*
+
+# Game settings
+MAX_PLAYERS_PER_ROOM=6
+ROOM_TIMEOUT_MS=1800000
+```
+
+### Docker
+
+The Docker setup includes:
+- Multi-stage builds for optimized image size
+- Non-root user for security
+- Health checks for monitoring
+- Auto-restart on failure
+- Production optimizations
 
 ## 🎛️ Debug Controls (dat.GUI)
 
@@ -112,42 +162,51 @@ Access the control panel in the top-right corner:
 ### Display Folder
 - **Show Interface**: Toggle UI visibility
 
-## 🔄 Modernization Changes
+## 🔄 Modernization Highlights
 
-### Architecture
-- ✅ ES6 classes replacing prototype patterns
-- ✅ ES6 modules replacing global scripts
-- ✅ Async/await for resource loading
-- ✅ Modern event handling (no jQuery)
+### Architecture Changes
+- ✅ ES6 classes and modules
+- ✅ WebSocket multiplayer (Socket.io)
+- ✅ Mobile controller support
+- ✅ Multi-input support (touch/mouse/keyboard)
+- ✅ Room-based multiplayer system
+- ✅ Production-ready Docker setup
 
 ### Graphics (Pixi.js v4 → v8)
-- ✅ New Graphics API with method chaining
-- ✅ Updated Text API with style objects
-- ✅ Modern Application initialization
+- ✅ New Graphics API
+- ✅ Modern Text API
 - ✅ Asset loading with `PIXI.Assets`
-- ✅ Proper canvas management
+- ✅ Proper memory management
 
 ### Build System
-- ✅ Vite with hot module replacement
+- ✅ Vite with HMR
 - ✅ npm package management
-- ✅ Production build optimization
-- ✅ No Apache/PHP required
+- ✅ Production optimization
+- ✅ Docker containerization
 
-### CSS
-- ✅ CSS custom properties for theming
-- ✅ Modern Flexbox layouts
-- ✅ Smooth animations with CSS transitions
-- ✅ Responsive design patterns
+### Removed Legacy Code
+- ❌ Polymer web components
+- ❌ Bower package manager
+- ❌ jQuery dependencies
+- ❌ PHP server files
+- ❌ Old socket implementations
 
 ## 🌐 Browser Support
 
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
+- Mobile browsers (iOS Safari, Chrome Android)
 
 ## 🐛 Known Issues
 
 All major rendering and memory issues from the legacy version have been resolved in this modernization.
+
+## 📝 API Endpoints
+
+- `GET /health` - Health check (returns room/player stats)
+- `GET /api/rooms/:seed` - Get room information
+- WebSocket events: `createRoom`, `joinRoom`, `move`, `gameStarted`, etc.
 
 ## 📝 License
 
@@ -157,8 +216,8 @@ MIT
 
 - **Original Game**: Joep Schyns
 - **Modernization**: 2025
-- **Technologies**: Pixi.js, Vite, dat.GUI, QRCode.js, Font Awesome
+- **Technologies**: Pixi.js, Vite, Socket.io, Express, Docker
 
 ---
 
-**Legacy Version**: http://joepschyns.me/scg/
+**Production Deployment**: Deploy with Docker for best results!

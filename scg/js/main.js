@@ -73,8 +73,7 @@ class Host {
         });
         
         this.socketManager.on('playerLeft', (data) => {
-            console.log('Remote player left:', data);
-            this.pixi.removePlayer(data.playerId);
+            this.removePlayer(data.playerId);
         });
         
         this.socketManager.on('playerInput', (data) => {

@@ -1,5 +1,35 @@
+# Dependencies
+node_modules/
 scg/bower_components/
 scg/js/pixi.js/
 scg/js/socket/bower_components/
-node_modules
+
+# Build output
+dist/
+scg/dist/
+
+# Environment
 .env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml

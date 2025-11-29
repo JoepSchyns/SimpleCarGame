@@ -129,7 +129,6 @@ class MobileController {
     
     setupSocketHandlers() {
         this.socketManager.on('hostFeedback', (feedback) => {
-            console.log('Received host feedback:', feedback);
             if (feedback.lives !== undefined) {
                 this.updateLives(feedback.lives);
             }
@@ -139,12 +138,10 @@ class MobileController {
         });
         
         this.socketManager.on('gameStarted', () => {
-            console.log('Game started signal received');
             this.showGameScreen();
         });
         
         this.socketManager.on('hostDisconnected', () => {
-            console.log('Host disconnected');
             this.showErrorScreen('The host has disconnected.');
         });
         
@@ -168,7 +165,6 @@ class MobileController {
                 let inputValue = 0;
                 if (leftPressed) inputValue = -1;
                 if (rightPressed) inputValue = 1;
-                console.log('Sending input:', inputValue);
                 this.socketManager.sendPlayerInput(inputValue);
             }
         };
